@@ -17,8 +17,17 @@ public class DbBean {
    private String LAT;
    private String LNT;
    private String WORK_DTTM;
+   private String DISTANCE;
 
-   public DbBean() {
+   public String getDISTANCE() {
+	return DISTANCE;
+}
+
+public void setDISTANCE(String dISTANCE) {
+	DISTANCE = dISTANCE;
+}
+
+public DbBean() {
    }
 
    public String getX_SWIFI_MGR_NO() {

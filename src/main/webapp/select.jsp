@@ -1,3 +1,7 @@
+<%@ page import="db.DbService" %>
+<%@ page import="db.DbBean" %>
+<%@ page import="java.util.List" %>
+<%@ page import="okhttp3.Request" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -24,6 +28,14 @@ table {width: 100%;}
 </script>
 
 <body>
+
+	<% 
+		String lat = request.getParameter("lat");
+		String lnt = request.getParameter("lnt");
+	
+		DbService dbService = new DbService();
+		List<DbBean> list = dbService.dbSelect(lat,lnt);
+	%>
 
 	<h1>와이파이 정보 구하기</h1>
 	
@@ -74,11 +86,32 @@ table {width: 100%;}
 			<th>Y좌표</th>		<!-- 16 -->
 			<th>작업일자</th>		<!-- 17 -->
 		</tr>
+		
+		<%
+			for(DbBean dbBean : list){
+		%>
 		<tr>
-			<td colspan="17">
-				위치 정보를 입력한 후에 조회해 주세요.
-			</td>
+			<td> <%=dbBean.getDISTANCE()%> </td>
+			<td> <%=dbBean.getX_SWIFI_MGR_NO()%> </td>
+			<td> <%=dbBean.getX_SWIFI_WRDOFC()%> </td>
+			<td> <%=dbBean.getX_SWIFI_MAIN_NM()%> </td>
+			<td> <%=dbBean.getX_SWIFI_ADRES1()%> </td>
+			<td> <%=dbBean.getX_SWIFI_ADRES2()%> </td>
+			<td> <%=dbBean.getX_SWIFI_INSTL_FLOOR()%> </td>
+			<td> <%=dbBean.getX_SWIFI_INSTL_TY()%> </td>
+			<td> <%=dbBean.getX_SWIFI_INSTL_MBY()%> </td>
+			<td> <%=dbBean.getX_SWIFI_SVC_SE()%> </td>
+			<td> <%=dbBean.getX_SWIFI_CMCWR()%> </td>
+			<td> <%=dbBean.getX_SWIFI_CNSTC_YEAR()%> </td>
+			<td> <%=dbBean.getX_SWIFI_INOUT_DOOR()%> </td>
+			<td> <%=dbBean.getX_SWIFI_REMARS3()%> </td>
+			<td> <%=dbBean.getLAT()%> </td>
+			<td> <%=dbBean.getLNT()%> </td>
+			<td> <%=dbBean.getWORK_DTTM()%> </td>
 		</tr>
+		<%
+			}
+		%>
 	
 	</table>
 	
