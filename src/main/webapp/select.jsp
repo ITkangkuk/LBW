@@ -12,7 +12,7 @@
 </head>
 <style>
 th { background-color: #00ae69; color: white; padding: 5px 10px; border-color: white; border-width: 1px; }
-td { text-align: center; height: 50px; font-weight: bold; border: solid; border-color: lightgray;}
+td { text-align: center; padding: 0; font-weight: bold; border: solid; border-color: lightgray;}
 table {width: 100%;}
 </style>
 
@@ -23,6 +23,13 @@ table {width: 100%;}
 		//내 위치 가져오기
 		$("#lat").val(37.5544069);
 		$("#lnt").val(126.8998666);
+	}
+	
+	function clicShowInfo(){
+		let lat = $("#lat").val();
+		let lnt = $("#lnt").val();
+		
+		location.href = "/select.jsp?lat="+lat+"&lnt="+lnt;
 	}
 
 </script>
@@ -43,7 +50,7 @@ table {width: 100%;}
 	
 	<br><br>
 
-	LAT: <input type="number" width="200px" id="lat"/>, LNT: <input type="number" width="200px" id="lnt"/> <button onclick="clickLoc()">내 위치 가져오기</button> <button>근처 WIFI 정보 보기</button>
+	LAT: <input type="number" width="200px" id="lat" value="<%=lat%>"/>, LNT: <input type="number" width="200px" id="lnt" value="<%=lnt%>"/> <button onclick="clickLoc()">내 위치 가져오기</button> <button onclick="clicShowInfo()">근처 WIFI 정보 보기</button>
 	
 	<br><br>
 	

@@ -18,17 +18,38 @@ public class DbBean {
    private String LNT;
    private String WORK_DTTM;
    private String DISTANCE;
+   
+   private String ID;
+   private String DATE;
+   
+
+   public DbBean() {
+   }
+   
+   public String getID() {
+		return ID;
+	}
+
+	public void setID(String iD) {
+		ID = iD;
+	}
+
+	public String getDATE() {
+		return DATE;
+	}
+
+	public void setDATE(String dATE) {
+		DATE = dATE;
+	}
+
 
    public String getDISTANCE() {
-	return DISTANCE;
-}
-
-public void setDISTANCE(String dISTANCE) {
-	DISTANCE = dISTANCE;
-}
-
-public DbBean() {
+	   return DISTANCE;
    }
+
+	public void setDISTANCE(String dISTANCE) {
+		DISTANCE = dISTANCE;
+	}
 
    public String getX_SWIFI_MGR_NO() {
       return this.X_SWIFI_MGR_NO;

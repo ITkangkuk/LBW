@@ -1,3 +1,6 @@
+<%@ page import="db.DbService" %>
+<%@ page import="db.DbBean" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -11,7 +14,21 @@ th { background-color: #00ae69; color: white; padding: 5px 10px; border-color: w
 td { text-align: center; height: 50px; font-weight: bold;}
 table {width: 100%;}
 </style>
+
+<script>
+
+function delHist(id_){
+	location.href = "/delete.jsp?id="+id_;
+}
+
+</script>
+
 <body>
+
+	<%
+		DbService dbService = new DbService();
+		List<DbBean> list = dbService.historySelect();
+	%>
 
 	<h1>위치 히스토리 목록</h1>
 	
@@ -20,6 +37,13 @@ table {width: 100%;}
 	<br><br>
 	
 	<table>
+		<colgroup>
+			<col style="width:5%;"/>
+			<col style="width:25%;"/>
+			<col style="width:25%;"/>
+			<col style="width:35%;"/>
+			<col style="width:10%;"/>
+		</colgroup>
 		<tr>
 			<th>ID</th> 	<!-- 1 -->
 			<th>X좌표</th>	<!-- 2 -->
@@ -27,11 +51,21 @@ table {width: 100%;}
 			<th>조회일자</th>	<!-- 4 -->
 			<th>비고</th>		<!-- 5 -->
 		</tr>
+		<%
+		for(DbBean dbBean : list){
+		%>
 		<tr>
-			<td colspan="5">
-				위치 히스토리가 없습니다.
+			<td> <%=dbBean.getID()%> </td>
+			<td> <%=dbBean.getLAT()%> </td>
+			<td> <%=dbBean.getLNT()%> </td>
+			<td> <%=dbBean.getDATE()%> </td>
+			<td> 
+				<button onclick="delHist('<%=dbBean.getID()%>')">삭제</button>
 			</td>
 		</tr>
+		<%
+			}
+		%>
 	
 	</table>
 	

@@ -46,8 +46,8 @@ public class DbService {
 	          insertEveryData(Integer.valueOf(count));
 	        } 
 	      } 
-	    } catch (IOException var11) {
-	      var11.printStackTrace();
+	    } catch (IOException e) {
+	      e.printStackTrace();
 	    } 
 	    return count;
   }
@@ -168,26 +168,26 @@ public class DbService {
 //        String memberPassword = rs.getString("password");
 //        System.out.println(String.valueOf(memberType) + "," + memberPassword);
 //      } 
-    } catch (SQLException var29) {
-      var29.printStackTrace();
+    } catch (SQLException e) {
+      e.printStackTrace();
     } finally {
       try {
         if (!rs.isClosed())
           rs.close(); 
-      } catch (SQLException var27) {
-        var27.printStackTrace();
+      } catch (SQLException e1) {
+        e1.printStackTrace();
       } 
       try {
         if (!stmt.isClosed())
         	stmt.close(); 
-      } catch (SQLException var26) {
-        var26.printStackTrace();
+      } catch (SQLException e2) {
+        e2.printStackTrace();
       } 
       try {
         if (!connection.isClosed())
           connection.close(); 
-      } catch (SQLException var25) {
-        var25.printStackTrace();
+      } catch (SQLException e3) {
+        e3.printStackTrace();
       } 
     } 
   }
@@ -209,8 +209,8 @@ public class DbService {
     Connection connection = null;
     PreparedStatement preparedStatement = null;
     ResultSet rs = null;
-    Integer LAT_ = Integer.valueOf(lat);
-    Integer LNT_ = Integer.valueOf(lnt);
+//    Integer LAT_ = Integer.valueOf(lat);
+//    Integer LNT_ = Integer.valueOf(lnt);
     
     try {
       connection = DriverManager.getConnection(url, dbUserId, dbPassword);
@@ -225,8 +225,8 @@ public class DbService {
 //      		+ "order by DISTANCE";
       
       preparedStatement = connection.prepareStatement(sql);
-      preparedStatement.setInt(1, LAT_);
-      preparedStatement.setInt(2, LNT_);
+      preparedStatement.setString(1, lat);
+      preparedStatement.setString(2, lnt);
       
       rs = preparedStatement.executeQuery();
       while (rs.next()) {
@@ -270,28 +270,184 @@ public class DbService {
     	    list.add(bean);
     	    
       } 
-    } catch (SQLException var28) {
-      var28.printStackTrace();
+      
+      //히스토리 저장
+      historyInsert(lat,lnt);
+    } catch (SQLException e) {
+      e.printStackTrace();
     } finally {
       try {
         if (!rs.isClosed())
           rs.close(); 
-      } catch (SQLException var26) {
-        var26.printStackTrace();
+      } catch (SQLException e1) {
+        e1.printStackTrace();
       } 
       try {
         if (!preparedStatement.isClosed())
           preparedStatement.close(); 
-      } catch (SQLException var25) {
-        var25.printStackTrace();
+      } catch (SQLException e2) {
+        e2.printStackTrace();
       } 
       try {
         if (!connection.isClosed())
           connection.close(); 
-      } catch (SQLException var24) {
-        var24.printStackTrace();
+      } catch (SQLException e3) {
+        e3.printStackTrace();
       } 
     } 
     return list;
   }
+  
+  public void historyInsert(String lat, String lnt) {
+	    String url = "jdbc:mariadb://localhost:3306/lbw";
+	    String dbUserId = "root";
+	    String dbPassword = "mariadb";
+	    try {
+	      Class.forName("org.mariadb.jdbc.Driver");
+	    } catch (ClassNotFoundException var28) {
+	      var28.printStackTrace();
+	    } 
+	    Connection connection = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+	    
+	    try {
+	      connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+	      String sql = "INSERT INTO LOCATION_HIST"
+	      		+ "(LAT, LNT, `DATE`)"
+	      		+ "VALUES("+lat+", "+lnt+", now());";
+	      stmt = connection.createStatement();
+	      rs = stmt.executeQuery(sql);
+	      
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    } finally {
+	      try {
+	        if (!rs.isClosed())
+	          rs.close(); 
+	      } catch (SQLException e1) {
+	        e1.printStackTrace();
+	      } 
+	      try {
+	        if (!stmt.isClosed())
+	        	stmt.close(); 
+	      } catch (SQLException e2) {
+	        e2.printStackTrace();
+	      } 
+	      try {
+	        if (!connection.isClosed())
+	          connection.close(); 
+	      } catch (SQLException e3) {
+	        e3.printStackTrace();
+	      } 
+	    } 
+	  }
+  
+  public List<DbBean> historySelect() {
+	  
+		List<DbBean> list = new ArrayList<>();
+		
+	    String url = "jdbc:mariadb://localhost:3306/lbw";
+	    String dbUserId = "root";
+	    String dbPassword = "mariadb";
+	    
+	    try {
+	      Class.forName("org.mariadb.jdbc.Driver");
+	    } catch (ClassNotFoundException ce) {
+	      ce.printStackTrace();
+	    } 
+	    
+	    Connection connection = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    
+	    try {
+	      connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+	      String sql = "SELECT * FROM LOCATION_HIST ORDER BY `DATE` DESC";
+	      
+	      preparedStatement = connection.prepareStatement(sql);
+	      
+	      rs = preparedStatement.executeQuery();
+	      while (rs.next()) {
+	    	    String ID = rs.getString("ID");
+	    	    String LAT = rs.getString("LAT");
+	    	    String LNT = rs.getString("LNT");
+	    	    String DATE = rs.getString("DATE");
+	    	    
+	    	    DbBean bean = new DbBean();
+	    	    bean.setID(ID);
+	    	    bean.setLAT(LAT);
+	    	    bean.setLNT(LNT);
+	    	    bean.setDATE(DATE);
+
+	    	    list.add(bean);
+	      } 
+	      
+	    } catch (SQLException e) {
+	      e.printStackTrace();
+	    } finally {
+	      try {
+	        if (!rs.isClosed())
+	          rs.close(); 
+	      } catch (SQLException e1) {
+	        e1.printStackTrace();
+	      } 
+	      try {
+	        if (!preparedStatement.isClosed())
+	          preparedStatement.close(); 
+	      } catch (SQLException e2) {
+	        e2.printStackTrace();
+	      } 
+	      try {
+	        if (!connection.isClosed())
+	          connection.close(); 
+	      } catch (SQLException e3) {
+	        e3.printStackTrace();
+	      } 
+	    } 
+	    return list;
+	  }
+  
+  public void dbDeleteHist(String id) {
+	    String url = "jdbc:mariadb://localhost:3306/lbw";
+	    String dbUserId = "root";
+	    String dbPassword = "mariadb";
+	    try {
+	      Class.forName("org.mariadb.jdbc.Driver");
+	    } catch (ClassNotFoundException var28) {
+	      var28.printStackTrace();
+	    } 
+	    Connection connection = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+	    
+	    try {
+	      connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+	      String sql = "DELETE FROM LOCATION_HIST WHERE ID="+id;
+	      stmt = connection.createStatement();
+	      rs = stmt.executeQuery(sql);
+	      
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    } finally {
+	      try {
+	        if (!rs.isClosed())
+	          rs.close(); 
+	      } catch (SQLException e1) {
+	        e1.printStackTrace();
+	      } 
+	      try {
+	        if (!stmt.isClosed())
+	        	stmt.close(); 
+	      } catch (SQLException e2) {
+	        e2.printStackTrace();
+	      } 
+	      try {
+	        if (!connection.isClosed())
+	          connection.close(); 
+	      } catch (SQLException e3) {
+	        e3.printStackTrace();
+	      } 
+	    } 
+	  }
 }
